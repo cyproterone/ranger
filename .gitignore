@@ -1,2 +1,4 @@
+!.gitkeep
 .git
 .DS_Store
+plugins/*
