@@ -8,12 +8,14 @@ from os import path
 from typing import List
 from urllib.parse import urlparse
 
+work_dir = path.abspath(path.dirname(__file__))
+install_dir = path.join(work_dir, "plugins")
+spec_file = path.join(work_dir, "plugins.txt")
 
-install_dir = path.abspath(path.join(path.dirname(__file__), "plugins"))
 
-plugins: List[str] = [
-    "https://github.com/alexanderjeurissen/ranger_devicons.git"
-]
+def read_lines(path: str) -> List[str]:
+  with open(path, "r") as fd:
+    return fd.readlines()
 
 
 def p_name(uri: str) -> str:
@@ -50,6 +52,7 @@ def main() -> None:
   args = parse_args()
   if not args.install:
     return
+  plugins = read_lines(spec_file)
   for plugin in plugins:
     install_plugin(plugin)
 
