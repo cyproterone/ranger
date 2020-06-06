@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from os import getcwd
 from os.path import abspath, basename, dirname, isdir, join, splitext
 from subprocess import run
 from typing import List
@@ -9,6 +10,12 @@ from urllib.parse import urlparse
 work_dir = dirname(abspath(dirname(__file__)))
 install_dir = join(work_dir, "plugins")
 spec_file = join(work_dir, "plugins.txt")
+
+
+def call(prog: str, *args: List[str], cwd=getcwd()) -> None:
+  ret = run([prog, *args], cwd=cwd)
+  if ret.returncode != 0:
+    exit(ret.returncode)
 
 
 def read_lines(path: str) -> List[str]:
@@ -27,11 +34,9 @@ def install_plugin(uri: str) -> None:
   install_target = join(install_dir, p_name(uri))
   print(f"安装: {uri}")
   if isdir(install_target):
-    run(["git", "pull"],
-        cwd=install_target.encode())
+    call("git", "pull", cwd=install_target.encode())
   else:
-    run(["git", "clone", "--depth=1", uri,
-         install_target])
+    call("git", "clone", "--depth=1", uri, install_target)
 
 
 def main() -> None:
