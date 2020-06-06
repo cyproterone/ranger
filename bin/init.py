@@ -1,16 +1,15 @@
 #!/usr/bin/env python3
 
-import argparse
-import subprocess
-import sys
-from argparse import Namespace
-from os import path
+from argparse import ArgumentParser, Namespace
+from os.path import abspath, basename, dirname, isdir, join, splitext
+from subprocess import run
 from typing import List
 from urllib.parse import urlparse
 
-work_dir = path.abspath(path.dirname(__file__))
-install_dir = path.join(work_dir, "plugins")
-spec_file = path.join(work_dir, "plugins.txt")
+
+work_dir = dirname(abspath(dirname(__file__)))
+install_dir = join(work_dir, "plugins")
+spec_file = join(work_dir, "plugins.txt")
 
 
 def read_lines(path: str) -> List[str]:
@@ -20,30 +19,24 @@ def read_lines(path: str) -> List[str]:
 
 def p_name(uri: str) -> str:
   url = urlparse(uri)
-  name = path.basename(url.path)
-  target, _ = path.splitext(name)
+  name = basename(url.path)
+  target, _ = splitext(name)
   return target
 
 
 def install_plugin(uri: str) -> None:
-  install_target = path.join(install_dir, p_name(uri))
+  install_target = join(install_dir, p_name(uri))
   print(f"安装: {uri}")
-  if path.isdir(install_target):
-    subprocess.run(
-        ["git", "pull"],
-        cwd=install_target.encode(),
-        stdout=sys.stdout,
-        stderr=sys.stderr)
+  if isdir(install_target):
+    run(["git", "pull"],
+        cwd=install_target.encode())
   else:
-    subprocess.run(
-        ["git", "clone", "--depth=1", uri,
-         install_target],
-        stdout=sys.stdout,
-        stderr=sys.stderr)
+    run(["git", "clone", "--depth=1", uri,
+         install_target])
 
 
 def parse_args() -> Namespace:
-  parser = argparse.ArgumentParser()
+  parser = ArgumentParser()
   parser.add_argument("-i", "--install", action="store_true", required=True)
   return parser.parse_args()
 
