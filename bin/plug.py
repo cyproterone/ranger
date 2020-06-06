@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-from argparse import ArgumentParser, Namespace
 from os.path import abspath, basename, dirname, isdir, join, splitext
 from subprocess import run
 from typing import List
@@ -35,16 +34,7 @@ def install_plugin(uri: str) -> None:
          install_target])
 
 
-def parse_args() -> Namespace:
-  parser = ArgumentParser()
-  parser.add_argument("-i", "--install", action="store_true", required=True)
-  return parser.parse_args()
-
-
 def main() -> None:
-  args = parse_args()
-  if not args.install:
-    return
   plugins = read_lines(spec_file)
   for plugin in plugins:
     install_plugin(plugin)
