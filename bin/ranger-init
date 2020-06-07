@@ -40,9 +40,11 @@ def install_plugin(uri: str) -> None:
 
 
 def main() -> None:
+  call("pip3", "install", "ranger-fm")
   plugins = read_lines(spec_file)
   for plugin in plugins:
     install_plugin(plugin)
 
 
 main()
+
