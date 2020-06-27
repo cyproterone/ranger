@@ -6,45 +6,43 @@ from subprocess import run
 from typing import List
 from urllib.parse import urlparse
 
-
 work_dir = dirname(abspath(dirname(__file__)))
 install_dir = join(work_dir, "plugins")
 spec_file = join(work_dir, "plugins.txt")
 
 
 def call(prog: str, *args: List[str], cwd=getcwd()) -> None:
-  ret = run([prog, *args], cwd=cwd)
-  if ret.returncode != 0:
-    exit(ret.returncode)
+    ret = run([prog, *args], cwd=cwd)
+    if ret.returncode != 0:
+        exit(ret.returncode)
 
 
 def read_lines(path: str) -> List[str]:
-  with open(path, "r") as fd:
-    return fd.readlines()
+    with open(path, "r") as fd:
+        return fd.readlines()
 
 
 def p_name(uri: str) -> str:
-  url = urlparse(uri)
-  name = basename(url.path)
-  target, _ = splitext(name)
-  return target
+    url = urlparse(uri)
+    name = basename(url.path)
+    target, _ = splitext(name)
+    return target
 
 
 def install_plugin(uri: str) -> None:
-  install_target = join(install_dir, p_name(uri))
-  print(f"安装: {uri}")
-  if isdir(install_target):
-    call("git", "pull", cwd=install_target.encode())
-  else:
-    call("git", "clone", "--depth=1", uri, install_target)
+    install_target = join(install_dir, p_name(uri))
+    print(f"安装: {uri}")
+    if isdir(install_target):
+        call("git", "pull", cwd=install_target.encode())
+    else:
+        call("git", "clone", "--depth=1", uri, install_target)
 
 
 def main() -> None:
-  call("pip3", "install", "ranger-fm")
-  plugins = read_lines(spec_file)
-  for plugin in plugins:
-    install_plugin(plugin)
+    call("pip3", "install", "ranger-fm")
+    plugins = read_lines(spec_file)
+    for plugin in plugins:
+        install_plugin(plugin)
 
 
 main()
-
