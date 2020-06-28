@@ -11,7 +11,7 @@ install_dir = join(work_dir, "plugins")
 spec_file = join(work_dir, "plugins.txt")
 
 
-def call(prog: str, *args: List[str], cwd=getcwd()) -> None:
+def call(prog: str, *args: str, cwd=getcwd()) -> None:
     ret = run([prog, *args], cwd=cwd)
     if ret.returncode != 0:
         exit(ret.returncode)
